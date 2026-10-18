@@ -1,0 +1,8 @@
+{
+  "extName": {
+    "message": "Sleep Pins"
+  },
+  "extDescription": {
+    "message": "Schließt man einen angepinnten Tab, schläft er ein, statt verloren zu gehen. Angepinnte Tabs bleiben auch nach einem Neustart."
+  }
+}

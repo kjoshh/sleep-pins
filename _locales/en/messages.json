@@ -1,0 +1,8 @@
+{
+  "extName": {
+    "message": "Sleep Pins"
+  },
+  "extDescription": {
+    "message": "Closing a pinned tab puts it to sleep instead of losing it. Pinned tabs also come back after a restart."
+  }
+}
