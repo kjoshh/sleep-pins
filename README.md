@@ -10,7 +10,7 @@ A little browser extension for [Helium](https://helium.computer) that makes pinn
 
 ## Install
 
-1. Download this repo as ZIP and unzip it.
+1. [Download the ZIP](https://github.com/kjoshh/sleep-pins/archive/refs/heads/main.zip) and unzip it, or run `git clone https://github.com/kjoshh/sleep-pins`.
 2. Open `helium://extensions` and turn on **Developer mode**.
 3. Click **Load unpacked** and pick the folder. Keep it there.
 
