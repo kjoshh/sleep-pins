@@ -129,7 +129,11 @@ async function waitForSessionRestore() {
 async function restoreSaved(s, windowId) {
   const { saved = [] } = await chrome.storage.local.get("saved");
   if (!saved.length) return;
-  windowId ??= (await chrome.windows.getLastFocused({ windowTypes: ["normal"] })).id;
+  if (windowId == null) {
+    // Kein Fenster offen: windows.onCreated holt die Tabs, sobald eins aufgeht.
+    if (!(await chrome.windows.getAll({ windowTypes: ["normal"] })).length) return;
+    windowId = (await chrome.windows.getLastFocused({ windowTypes: ["normal"] })).id;
+  }
 
   const tabs = await chrome.tabs.query({});
   const used = new Set();
@@ -157,22 +161,20 @@ async function restoreSaved(s, windowId) {
   }
 }
 
-chrome.runtime.onStartup.addListener(() =>
-  withState(async (s) => {
+// Beim Start des Service Workers: Ist der Sitzungszustand leer, ist Helium gerade
+// gestartet oder hat das Profil neu geladen. Letzteres passiert auf dem Mac, wenn
+// man das letzte Fenster schließt und dann wieder eins öffnet. Dann kommt kein
+// runtime.onStartup, und das neue Fenster ist schon offen, bevor die Erweiterung
+// zuhört. Darum hier selbst wiederherstellen. Bereits offene Tabs werden nicht
+// doppelt geöffnet, das gilt auch nach Installation oder Neuladen der Erweiterung.
+withState(async (s) => {
+  if (!s.ready) {
     await waitForSessionRestore();
     await restoreSaved(s);
     s.ready = true;
-    await snapshot(s);
-  })
-);
-
-// Nach Installation oder Neuladen der Erweiterung sind die Tabs schon offen.
-chrome.runtime.onInstalled.addListener(() =>
-  withState(async (s) => {
-    s.ready = true;
-    await snapshot(s);
-  })
-);
+  }
+  await snapshot(s);
+});
 
 // Neues Fenster, und nirgends ist ein angepinnter Tab offen (z. B. auf dem
 // Mac nach dem Schließen des letzten Fensters): gespeicherte wieder öffnen.
@@ -240,4 +242,3 @@ chrome.tabs.onReplaced.addListener((addedId, removedId) =>
 for (const event of [chrome.tabs.onCreated, chrome.tabs.onMoved, chrome.tabs.onAttached]) {
   event.addListener(() => withState(snapshot));
 }
-withState(snapshot);
