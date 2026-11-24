@@ -1,5 +1,7 @@
 # Sleep Pins
 
+> **No longer needed.** Helium 0.22.2.1 and later has persistent pinned tabs built in ([imputnet/helium#2931](https://github.com/imputnet/helium/pull/2931)). If you installed Sleep Pins, you can remove it in `helium://extensions`.
+
 <img src="icons/icon128.png" width="64" align="right" alt="">
 
 A little browser extension for [Helium](https://helium.computer) that makes pinned tabs stick around.
